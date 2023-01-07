@@ -12,13 +12,29 @@ def recupIP():
                     return adrIP
                 else:
                     print("Erreur : l'adresse rentrée n'est pas correct")
-                    recupIP()
+                    return False
             else:
                 print("Erreur : l'adresse rentrée n'est pas correct")
-                recupIP()
+                return False
     else:
         print("Erreur : l'adresse rentrée n'est pas correct")
-        recupIP()
+        return False
+
+def realNetIP(ip, masque):
+    stringBinaryIP = ""
+    stringBinaryMasque = ""
+    stringNewIP=""
+    newIP=[]
+    for cptIP in ip:
+        stringBinaryIP += format(int(cptIP), 'b').zfill(8)
+    for cptMasque in masque:
+        stringBinaryMasque += format(int(cptMasque), 'b').zfill(8)
+    for cptCalcNet in range(32):
+        stringNewIP += str(int(stringBinaryIP[cptCalcNet]) and int(stringBinaryMasque[cptCalcNet]))
+    for cptBinToList in range(4):
+        newIP.append(str(int(stringNewIP[8*cptBinToList:8*(cptBinToList+1)], 2)))
+    return newIP
+
 #Masque
 def recupMasque():
     masque = input("Quel masque ? ")
@@ -26,17 +42,17 @@ def recupMasque():
     if len(adrMasque) == 4:
         for numMasque in adrMasque:
             if numMasque.isdigit():
-                if int(numMasque) >= 0 and int(numMasque) <= 255:
+                if int(numMasque) in [0, 128, 192, 224, 240, 248, 252, 254, 255]:
                     return adrMasque
                 else:
                     print("Erreur : le masque rentré n'est pas correct")
-                    recupMasque()
+                    return False
             else:
                 print("Erreur : le masque rentré n'est pas correct")
-                recupMasque()
+                return False
     else:
         print("Erreur : le masque rentré n'est pas correct")
-        recupMasque()
+        return False
 #Mode de fonctionnement
 def recupMode():
     mode = input("Définir le nombre d'hôtes (1) ou de sous-réseaux (2) ?")
@@ -119,6 +135,7 @@ def calcSubMasque(masque, nbReseau):
     for i in range(4):
         subMasque.append(str(int(masqueBinaire[8*i:8*(i+1)], 2)))
     return subMasque, nbBitReseau
+
 def calcSubReseauIp(reseau, nbHotes, numReseau):
     reseauBinaire = ""
     for i in reseau:
@@ -155,6 +172,7 @@ def calcLastHote(reseau, nbHotes):
 #l'adresse de dernier hote comme paramètre
 
 def mainCalc(reseau, masque, mode, nbMini):
+    print("")
     if mode == 1:
         nbHotes = calcSubHotesByUser(nbMini)
         nbReseaux = calcSubReseauxByNbHotes(masque, nbHotes)
@@ -182,15 +200,21 @@ def mainCalc(reseau, masque, mode, nbMini):
 
     
 
-  
+
 reseau = recupIP()
+while not reseau: #Ceci est du au fait que si j'utilise une fonction recursive python retourne un objet NoneType un à la premiere iteration
+    reseau = recupIP()
+
 masque = recupMasque()
+while not masque:
+    masque = recupMasque()
+realReseau = realNetIP(reseau, masque)
 mode = recupMode()
 if mode == 1 :
     nbMini = recupNbHotes(calculNbHote(masque))
 else:
     nbMini = recupNbReseaux(calculNbHote(masque))
-mainCalc(reseau, masque, mode, nbMini)
+mainCalc(realReseau, masque, mode, nbMini)
 
 
     
