@@ -102,6 +102,11 @@ def recupMode():
 
 
 def calculNbHote(masque):
+    """
+    Cette fonction permet de calculer le nombre d'hôtes total du réseau.
+
+    Elle prend donc comme paramètre masque [liste de string]
+    """
     masqueBinaire = ""
     for i in masque:
         masqueBinaire += format(int(i), 'b').zfill(8)
@@ -111,6 +116,11 @@ def calculNbHote(masque):
 
 
 def recupNbHotes(nbHoteReseau):
+    """
+    Cette fonction permet de recuperer le nombre d'hôtes du sous-réseau.
+
+    Elle prend donc comme paramètre nbHoteReseau [entier]
+    """
     nbHote = input("Nombres d'hôtes ? ")
     if nbHote.isdigit():
         if int(nbHote) <= nbHoteReseau:
@@ -125,6 +135,11 @@ def recupNbHotes(nbHoteReseau):
 
 
 def recupNbReseaux(nbHoteReseau):
+    """
+    Cette fonction permet de recuperer le nombre de sous-réseaux du réseau.
+
+    Elle prend donc comme paramètre nbHoteReseau [entier]
+    """
     nbReseaux = input("Nombres de réseaux ? ")
     if nbReseaux.isdigit():
         if int(nbReseaux) <= nbHoteReseau:
@@ -140,6 +155,11 @@ def recupNbReseaux(nbHoteReseau):
 
 
 def calcSubHotesByUser(nbMiniHotes):
+    """
+    Cette fonction permet de calculer le nombre d'hôtes du réseau en fonction du nombre indiqué par l'utilisateur.
+
+    Elle prend donc comme paramètre nbMiniHotes [entier]
+    """
     cpt = 0
     nbHotes = 1
     while nbHotes - 2 < nbMiniHotes:
@@ -149,16 +169,29 @@ def calcSubHotesByUser(nbMiniHotes):
 
 
 def calcSubHotesByNbReseaux(masque, nbReseaux):
+    """
+    Cette fonction permet de calculer le nombre d'hôtes du sous-réseau en fonction du nombre indiqué par l'utilisateur.
+    Elle prend donc comme paramètre masque [liste de string] et nbReseaux [entier]
+    """
     nbHotes = calculNbHote(masque) // nbReseaux - 2 + 1
     return nbHotes
 
 
 def calcSubReseauxByNbHotes(masque, nbHotes):
+    """
+    Cette fonction permet de calculer le nombre de sous-réseaux du réseau en fonction du nombre d'hôtes indiqué par l'utilisateur.
+    Elle prend donc comme paramètre masque [liste de string] et nbHotes [entier]
+    """
+
     nbReseaux = calculNbHote(masque) // (nbHotes + 2) + 1
     return nbReseaux
 
 
 def calcSubReseauxByUser(nbMiniReseaux):
+    """
+    Cette fonction permet de calculer le nombre de sous-réseaux du réseau en fonction du nombre d'hôtes indiqué par l'utilisateur.
+    Elle prend donc comme paramètre nbMiniReseaux [entier]
+    """
     cpt = 0
     nbReseaux = 1
     while nbReseaux < nbMiniReseaux:
@@ -168,6 +201,10 @@ def calcSubReseauxByUser(nbMiniReseaux):
 
 
 def calcSubMasque(masque, nbReseau):
+    """
+    Cette fonction permet de calculer le nouveau masque de sous-réseaux.
+    Elle prend donc comme paramètre l'ancien masque [liste de string] et nbReseaux [entier]
+    """
     masqueBinaire = ""
     for i in masque:
         masqueBinaire += format(int(i), 'b').zfill(8)
@@ -185,6 +222,11 @@ def calcSubMasque(masque, nbReseau):
 
 
 def calcSubReseauIp(reseau, nbHotes, numReseau):
+    """
+    Cette fonction permet de calculer la nouvelle adresse de réseau.
+
+    Elle prend donc comme paramètre reseau [liste de string] nbHotes [entier] et numReseau [entier]
+    """
     reseauBinaire = ""
     for i in reseau:
         reseauBinaire += format(int(i), 'b').zfill(8)
@@ -197,6 +239,11 @@ def calcSubReseauIp(reseau, nbHotes, numReseau):
 
 
 def calcFirstHote(reseau):
+    """
+    Cette fonction permet de calculer le premier hôte du réseau.
+
+    Elle prend donc comme paramètre reseau [liste de string]
+    """
     reseauBinaire = ""
     for i in reseau:
         reseauBinaire += format(int(i), 'b').zfill(8)
@@ -209,6 +256,11 @@ def calcFirstHote(reseau):
 
 
 def calcLastHote(reseau, nbHotes):
+    """
+    Cette fonction permet de calculer le dernier hôte du réseau.
+
+    Elle prend donc comme paramètre reseau [liste de string] nbHotes [entier]
+    """
     reseauBinaire = ""
     for i in reseau:
         reseauBinaire += format(int(i), 'b').zfill(8)
@@ -225,6 +277,9 @@ def calcLastHote(reseau, nbHotes):
 
 
 def mainCalc(reseau, masque, mode, nbMini):
+    """
+    Cette fonction permet d'effectuer les calculs principaux et d'afficher toutes les informations de chaques réseaux
+    """
     print("")
     if mode == 1:
         nbHotes = calcSubHotesByUser(nbMini)
