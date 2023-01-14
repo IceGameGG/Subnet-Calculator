@@ -1,8 +1,16 @@
-#----------------MODULES-----------------
+# ----------------MODULES-----------------
 from math import log2
-#Vérification des valeurs
-#Adresse
+# Vérification des valeurs
+# Adresse
+
+
 def recupIP():
+    """
+    Cette fonction permet de récuperer l'adresse IP que l'utilisateur saisi,
+    elle verifie aussit qu'il s'agisse bien d'une adresse IP valide.
+
+    Elle ne contient aucun paramètre.
+    """
     IP = input("Quelle adresse ? ")
     adrIP = IP.split(".")
     if len(adrIP) == 4:
@@ -20,23 +28,39 @@ def recupIP():
         print("Erreur : l'adresse rentrée n'est pas correct")
         return False
 
+
 def realNetIP(ip, masque):
+    """
+    Cette fonction permet de calculer l'adresse du réseaux à partir de l'adresse d'un hôte et du masque de sous réseaux.
+
+    Elle prend donc comme paramètre ip [liste de string] et masque [liste de string]
+    """
     stringBinaryIP = ""
     stringBinaryMasque = ""
-    stringNewIP=""
-    newIP=[]
+    stringNewIP = ""
+    newIP = []
     for cptIP in ip:
         stringBinaryIP += format(int(cptIP), 'b').zfill(8)
     for cptMasque in masque:
         stringBinaryMasque += format(int(cptMasque), 'b').zfill(8)
     for cptCalcNet in range(32):
-        stringNewIP += str(int(stringBinaryIP[cptCalcNet]) and int(stringBinaryMasque[cptCalcNet]))
+        stringNewIP += str(int(stringBinaryIP[cptCalcNet])
+                           and int(stringBinaryMasque[cptCalcNet]))
     for cptBinToList in range(4):
-        newIP.append(str(int(stringNewIP[8*cptBinToList:8*(cptBinToList+1)], 2)))
+        newIP.append(
+            str(int(stringNewIP[8*cptBinToList:8*(cptBinToList+1)], 2)))
     return newIP
 
-#Masque
+# Masque
+
+
 def recupMasque():
+    """
+    Cette fonction permet de récuperer le masque que l'utilisateur saisi,
+    elle verifie aussit qu'il s'agisse bien d'un masque valide.
+
+    Elle ne contient aucun paramètre.
+    """
     masque = input("Quel masque ? ")
     adrMasque = masque.split(".")
     if len(adrMasque) == 4:
@@ -53,8 +77,16 @@ def recupMasque():
     else:
         print("Erreur : le masque rentré n'est pas correct")
         return False
-#Mode de fonctionnement
+# Mode de fonctionnement
+
+
 def recupMode():
+    """
+    Cette fonction permet de récuperer le mode de calcul saisi par l'utilisateur,
+    elle verifie qu'il s'agissent bien de l'un ou l'autre des mode
+
+    Elle ne contient aucun paramètre.
+    """
     mode = input("Définir le nombre d'hôtes (1) ou de sous-réseaux (2) ?")
     if mode.isdigit():
         if int(mode) == 1 or int(mode) == 2:
@@ -65,38 +97,48 @@ def recupMode():
     else:
         print("Erreur : le mode de calcul doit être 1 ou 2")
         recupMode()
-#Nombre d'hôtes
-#Calcul du nombre d'hôte total du réseau
+# Nombre d'hôtes
+# Calcul du nombre d'hôte total du réseau
+
+
 def calculNbHote(masque):
     masqueBinaire = ""
     for i in masque:
         masqueBinaire += format(int(i), 'b').zfill(8)
     masqueVal = masqueBinaire.count("0")
-    nbhote = 2 ** masqueVal - 2 # retire les adresses de réseau et de broadcast
+    nbhote = 2 ** masqueVal - 2  # retire les adresses de réseau et de broadcast
     return nbhote
+
+
 def recupNbHotes(nbHoteReseau):
     nbHote = input("Nombres d'hôtes ? ")
     if nbHote.isdigit():
         if int(nbHote) <= nbHoteReseau:
             return int(nbHote)
         else:
-            print("Erreur : le nombre d'hôtes doit être inférieur ou égale au nombre d'hôtes total du réseau")
+            print(
+                "Erreur : le nombre d'hôtes doit être inférieur ou égale au nombre d'hôtes total du réseau")
             recupNbHotes(nbHoteReseau)
     else:
         print("Erreur : Le nombre d'hôtes doit être un entier")
         recupNbHotes(nbHoteReseau)
+
+
 def recupNbReseaux(nbHoteReseau):
     nbReseaux = input("Nombres de réseaux ? ")
     if nbReseaux.isdigit():
         if int(nbReseaux) <= nbHoteReseau:
             return int(nbReseaux)
         else:
-            print("Erreur : le nombre de réseaux doit être inférieur ou égale au nombre d'hôtes total du réseau")
+            print(
+                "Erreur : le nombre de réseaux doit être inférieur ou égale au nombre d'hôtes total du réseau")
             recupNbReseaux(nbHoteReseau)
     else:
         print("Erreur : Le nombre de réseaux doit être un entier")
         recupNbReseaux(nbHoteReseau)
-#Calcul des reseaux
+# Calcul des reseaux
+
+
 def calcSubHotesByUser(nbMiniHotes):
     cpt = 0
     nbHotes = 1
@@ -104,13 +146,18 @@ def calcSubHotesByUser(nbMiniHotes):
         cpt += 1
         nbHotes = 2 ** cpt
     return nbHotes - 2
+
+
 def calcSubHotesByNbReseaux(masque, nbReseaux):
     nbHotes = calculNbHote(masque) // nbReseaux - 2 + 1
     return nbHotes
 
+
 def calcSubReseauxByNbHotes(masque, nbHotes):
     nbReseaux = calculNbHote(masque) // (nbHotes + 2) + 1
     return nbReseaux
+
+
 def calcSubReseauxByUser(nbMiniReseaux):
     cpt = 0
     nbReseaux = 1
@@ -136,6 +183,7 @@ def calcSubMasque(masque, nbReseau):
         subMasque.append(str(int(masqueBinaire[8*i:8*(i+1)], 2)))
     return subMasque, nbBitReseau
 
+
 def calcSubReseauIp(reseau, nbHotes, numReseau):
     reseauBinaire = ""
     for i in reseau:
@@ -146,6 +194,8 @@ def calcSubReseauIp(reseau, nbHotes, numReseau):
     for i in range(4):
         subReseau.append(str(int(subReseauBinaire[8*i:8*(i+1)], 2)))
     return subReseau
+
+
 def calcFirstHote(reseau):
     reseauBinaire = ""
     for i in reseau:
@@ -156,6 +206,8 @@ def calcFirstHote(reseau):
     for i in range(4):
         firstHote.append(str(int(firstHoteBinaire[8*i:8*(i+1)], 2)))
     return firstHote
+
+
 def calcLastHote(reseau, nbHotes):
     reseauBinaire = ""
     for i in reseau:
@@ -166,17 +218,18 @@ def calcLastHote(reseau, nbHotes):
     for i in range(4):
         lastHote.append(str(int(lastHoteBinaire[8*i:8*(i+1)], 2)))
     return lastHote
-#Pour calculer l'adresse de broadcast, il suffit de calculer
-#l'adresse suivant celle du dernier hote. La fonction calcFirstHote
-#effectue déja ce calcul. On peut donc la réutiliser en utilisant 
-#l'adresse de dernier hote comme paramètre
+# Pour calculer l'adresse de broadcast, il suffit de calculer
+# l'adresse suivant celle du dernier hote. La fonction calcFirstHote
+# effectue déja ce calcul. On peut donc la réutiliser en utilisant
+# l'adresse de dernier hote comme paramètre
+
 
 def mainCalc(reseau, masque, mode, nbMini):
     print("")
     if mode == 1:
         nbHotes = calcSubHotesByUser(nbMini)
         nbReseaux = calcSubReseauxByNbHotes(masque, nbHotes)
-        
+
     else:
         nbReseaux = calcSubReseauxByUser(nbMini)
         nbHotes = calcSubHotesByNbReseaux(masque, nbReseaux)
@@ -195,32 +248,18 @@ def mainCalc(reseau, masque, mode, nbMini):
         print(f"Adresse du dernier hôte : {'.'.join(lastHote)}")
         print(f"Adresse de diffusion : {'.'.join(broadcast)}")
         print(f"Nombres maximal d'hôtes : {nbHotes}", end="\n \n")
-        
-
-
-    
 
 
 reseau = recupIP()
-while not reseau: #Ceci est du au fait que si j'utilise une fonction recursive python retourne un objet NoneType un à la premiere iteration
+while not reseau:  # Ceci est du au fait que si j'utilise une fonction recursive python retourne un objet NoneType un à la premiere iteration
     reseau = recupIP()
-
 masque = recupMasque()
 while not masque:
     masque = recupMasque()
 realReseau = realNetIP(reseau, masque)
 mode = recupMode()
-if mode == 1 :
+if mode == 1:
     nbMini = recupNbHotes(calculNbHote(masque))
 else:
     nbMini = recupNbReseaux(calculNbHote(masque))
 mainCalc(realReseau, masque, mode, nbMini)
-
-
-    
-
-
-
-
-
-
