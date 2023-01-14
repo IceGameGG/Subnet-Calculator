@@ -1,7 +1,4 @@
-# ----------------MODULES-----------------
 from math import log2
-# Vérification des valeurs
-# Adresse
 
 
 def recupIP():
@@ -15,15 +12,16 @@ def recupIP():
     adrIP = IP.split(".")
     if len(adrIP) == 4:
         for numIP in adrIP:
-            if numIP.isdigit:
-                if int(numIP) >= 0 and int(numIP) <= 255:
-                    return adrIP
-                else:
-                    print("Erreur : l'adresse rentrée n'est pas correct")
-                    return False
-            else:
+            try:
+                int(numIP)
+            except:
                 print("Erreur : l'adresse rentrée n'est pas correct")
                 return False
+            else:
+                if int(numIP) < 0 or int(numIP) > 255:
+                    print("Erreur : l'adresse rentrée n'est pas correct")
+                    return False
+        return adrIP
     else:
         print("Erreur : l'adresse rentrée n'est pas correct")
         return False
@@ -51,8 +49,6 @@ def realNetIP(ip, masque):
             str(int(stringNewIP[8*cptBinToList:8*(cptBinToList+1)], 2)))
     return newIP
 
-# Masque
-
 
 def recupMasque():
     """
@@ -61,23 +57,48 @@ def recupMasque():
 
     Elle ne contient aucun paramètre.
     """
-    masque = input("Quel masque ? ")
+    masque = input("Quel masque ? (format décimal pointé ou CIDR) ")
+    if masque[0] == "/":
+        return CIDRToMask(masque)
     adrMasque = masque.split(".")
     if len(adrMasque) == 4:
         for numMasque in adrMasque:
-            if numMasque.isdigit():
-                if int(numMasque) in [0, 128, 192, 224, 240, 248, 252, 254, 255]:
-                    return adrMasque
-                else:
-                    print("Erreur : le masque rentré n'est pas correct")
-                    return False
-            else:
+            try:
+                int(numMasque)
+            except:
                 print("Erreur : le masque rentré n'est pas correct")
                 return False
+            else:
+                if not int(numMasque) in [255, 254, 252, 248, 240, 224, 192, 128, 0]:
+                    print("Erreur : le masque rentré n'est pas correct")
+                    return False
+        return adrMasque
     else:
         print("Erreur : le masque rentré n'est pas correct")
         return False
-# Mode de fonctionnement
+
+
+def CIDRToMask(masque):
+    masque = masque.replace('/', '')
+    try:
+        int(masque)
+    except:
+        print("Erreur : le masque rentré n'est pas correctaa")
+        return False
+    else:
+        if int(masque) >= 32 or int(masque) <= 0:
+            print("Erreur : le masque rentré n'est pas correctaaa")
+            return False
+        else:
+            masqueBinaire = ""
+            for i in range(int(masque)):
+                masqueBinaire += "1"
+            for i in range(32-int(masque)):
+                masqueBinaire += "0"
+            masque = []
+            for i in range(4):
+                masque.append(str(int(masqueBinaire[8*i:8*(i+1)], 2)))
+            return masque
 
 
 def recupMode():
@@ -88,17 +109,17 @@ def recupMode():
     Elle ne contient aucun paramètre.
     """
     mode = input("Définir le nombre d'hôtes (1) ou de sous-réseaux (2) ?")
-    if mode.isdigit():
+    try:
+        int(mode)
+    except:
+        print("Erreur : le mode de calcul doit être 1 ou 2")
+        recupMode()
+    else:
         if int(mode) == 1 or int(mode) == 2:
             return int(mode)
         else:
             print("Erreur : le mode de calcul doit être 1 ou 2")
             recupMode()
-    else:
-        print("Erreur : le mode de calcul doit être 1 ou 2")
-        recupMode()
-# Nombre d'hôtes
-# Calcul du nombre d'hôte total du réseau
 
 
 def calculNbHote(masque):
@@ -122,16 +143,18 @@ def recupNbHotes(nbHoteReseau):
     Elle prend donc comme paramètre nbHoteReseau [entier]
     """
     nbHote = input("Nombres d'hôtes ? ")
-    if nbHote.isdigit():
+    try:
+        int(nbHote)
+    except:
+        print("Erreur : le nombre d'hôtes doit être un entier")
+        recupNbHotes(nbHoteReseau)
+    else:
         if int(nbHote) <= nbHoteReseau:
             return int(nbHote)
         else:
             print(
                 "Erreur : le nombre d'hôtes doit être inférieur ou égale au nombre d'hôtes total du réseau")
             recupNbHotes(nbHoteReseau)
-    else:
-        print("Erreur : Le nombre d'hôtes doit être un entier")
-        recupNbHotes(nbHoteReseau)
 
 
 def recupNbReseaux(nbHoteReseau):
@@ -141,17 +164,20 @@ def recupNbReseaux(nbHoteReseau):
     Elle prend donc comme paramètre nbHoteReseau [entier]
     """
     nbReseaux = input("Nombres de réseaux ? ")
-    if nbReseaux.isdigit():
+    try:
+        int(nbReseaux)
+    except:
+        print("Erreur : le nombre de réseaux doit être un entier")
+        recupNbReseaux(nbHoteReseau)
+    else:
         if int(nbReseaux) <= nbHoteReseau:
             return int(nbReseaux)
         else:
             print(
                 "Erreur : le nombre de réseaux doit être inférieur ou égale au nombre d'hôtes total du réseau")
             recupNbReseaux(nbHoteReseau)
-    else:
-        print("Erreur : Le nombre de réseaux doit être un entier")
-        recupNbReseaux(nbHoteReseau)
-# Calcul des reseaux
+
+#
 
 
 def calcSubHotesByUser(nbMiniHotes):
